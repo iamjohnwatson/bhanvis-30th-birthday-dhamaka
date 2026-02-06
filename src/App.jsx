@@ -79,65 +79,7 @@ const ACT_II_QUESTIONS = [
   }
 ];
 
-// ... (rest of code)
 
-function Act2({ data, onAnswer, shake, index, total }) {
-  // Check if we can verify the video exists? For now, we assume if the user puts the file there, it works.
-  // Actually, standard HTML5 video will just fail gracefully or show black if src is missing.
-  // But we want a fallback. 
-  // Strategy: Try to load the video. Responsive player.
-  
-  return (
-    <motion.div 
-      variants={pageVariants}
-      initial="initial" animate="animate" exit="exit"
-      className="min-h-full flex flex-col p-8 pt-20"
-    >
-      <div className="mb-6 text-center relative z-10 shrink-0">
-        <p className="text-bollywood-gold/60 text-[10px] tracking-[0.3em] font-bold uppercase mb-2">Act II • Travel Montage</p>
-        <div className="w-12 h-[1px] bg-bollywood-gold/30 mx-auto"></div>
-      </div>
-      
-      {/* Cinema Frame */}
-      <div className="w-full aspect-video max-h-[40vh] bg-black relative shadow-2xl group mx-auto mb-8 perspective-1000 shrink-0">
-        <div className="absolute -inset-[2px] bg-gradient-to-b from-bollywood-gold/30 to-transparent rounded-sm opacity-50"></div>
-        <div className="absolute inset-0 border-[10px] border-zinc-900 shadow-[inset_0_0_20px_rgba(0,0,0,1)] z-10 pointer-events-none"></div>
-        
-        {/* Toggle between Local Video and YouTube */}
-        {/* Note: In a real app we'd check if file exists. Here we give the 'onError' fallback to YouTube visually or user logic.
-            For this user, we will instruct them: "If you add scene1.mp4, it plays perfectly. If not, it might error."
-            Actually, let's keep YouTube as default unless we KNOW local exists.
-            For the sake of the prompt "What can I do", providing the FACILITY to use local video is the answer.
-        */}
-        <video
-           className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity"
-           src={data.localVideo}
-           autoPlay
-           loop
-           muted={false}
-           playsInline
-           onError={(e) => {
-               // Fallback logic if local video fails (e.g. file not found)
-               e.target.style.display = 'none';
-               e.target.nextSibling.style.display = 'block'; // Show iframe
-           }}
-        />
-        <iframe 
-          className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity hidden"
-          src={`https://www.youtube.com/embed/${data.videoId}?autoplay=1&mute=0&controls=0&loop=1&playlist=${data.videoId}`}
-          title={data.videoTitle}
-          frameBorder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-        ></iframe>
-        
-        <div className="absolute -bottom-12 left-0 right-0 text-center">
-           <div className="text-bollywood-gold text-[10px] uppercase tracking-wider mb-1 flex items-center justify-center gap-2">
-             <div className="w-1 h-1 bg-ruby-red rounded-full animate-pulse"></div> Now Playing
-           </div>
-           <div className="text-white font-playfair text-lg truncate max-w-[80%] mx-auto">{data.videoTitle}</div>
-        </div>
-      </div>
 
 /*
   Framer Motion Variants
@@ -501,13 +443,27 @@ function Act2({ data, onAnswer, shake, index, total }) {
       </div>
 
       {/* Cinema Frame */}
-      {/* Cinema Frame */}
       <div className="w-full aspect-video max-h-[40vh] bg-black relative shadow-2xl group mx-auto mb-8 perspective-1000 shrink-0">
         <div className="absolute -inset-[2px] bg-gradient-to-b from-bollywood-gold/30 to-transparent rounded-sm opacity-50"></div>
         <div className="absolute inset-0 border-[10px] border-zinc-900 shadow-[inset_0_0_20px_rgba(0,0,0,1)] z-10 pointer-events-none"></div>
 
-        <iframe
+        {/* Toggle between Local Video and YouTube */}
+        <video
           className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity"
+          src={data.localVideo}
+          autoPlay
+          loop
+          muted={false}
+          playsInline
+          onError={(e) => {
+            // Fallback logic if local video fails
+            e.target.style.display = 'none';
+            // Show iframe (next sibling)
+            if (e.target.nextSibling) e.target.nextSibling.style.display = 'block';
+          }}
+        />
+        <iframe
+          className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity hidden"
           src={`https://www.youtube.com/embed/${data.videoId}?autoplay=1&mute=0&controls=0&loop=1&playlist=${data.videoId}`}
           title={data.videoTitle}
           frameBorder="0"
