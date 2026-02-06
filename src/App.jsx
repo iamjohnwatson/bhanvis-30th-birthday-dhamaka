@@ -214,7 +214,7 @@ export default function App() {
 
       <audio
         ref={audioRef}
-        src="/bg-music.mp3"
+        src="bg-music.mp3"
         loop
         onPlay={() => console.log("Audio started playing")}
         onPause={() => console.log("Audio paused")}
