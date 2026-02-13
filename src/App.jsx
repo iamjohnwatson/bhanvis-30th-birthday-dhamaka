@@ -536,6 +536,7 @@ function Intermission({ onNext }) {
 
 function Finale() {
   const [revealed, setRevealed] = useState(false);
+  const [showVideo, setShowVideo] = useState(false);
 
   const handleSwipe = () => {
     setRevealed(true);
@@ -564,6 +565,31 @@ function Finale() {
 
   return (
     <div className="h-full w-full relative bg-zinc-950 overflow-hidden">
+      {/* Video Overlay */}
+      <AnimatePresence>
+        {showVideo && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 z-[100] bg-black flex items-center justify-center p-4"
+          >
+            <video
+              src="finale.mp4"
+              className="w-full h-full object-contain max-h-[80vh] border-2 border-bollywood-gold rounded-lg shadow-[0_0_50px_rgba(212,175,55,0.3)]"
+              controls
+              autoPlay
+            />
+            <button
+              onClick={() => setShowVideo(false)}
+              className="absolute top-4 right-4 text-white hover:text-bollywood-gold"
+            >
+              <VolumeX size={32} />
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Curtain Layer */}
       <motion.div
         className="absolute inset-0 z-40 flex"
@@ -659,10 +685,17 @@ function Finale() {
 
           <motion.div
             initial={{ scale: 0, opacity: 0 }} animate={revealed ? { scale: 1.2, opacity: 1 } : {}} transition={{ delay: 4, type: 'spring' }}
-            className="pt-8"
+            className="pt-8 flex flex-col gap-6 items-center"
           >
             <button className="text-2xl bg-ruby-red text-white font-bold font-montserrat uppercase px-8 py-4 clip-path-ticket shadow-[0_0_50px_rgba(155,17,30,0.6)] animate-pulse-glow">
               Open it NOW
+            </button>
+
+            <button
+              onClick={() => setShowVideo(true)}
+              className="text-sm text-bollywood-gold font-playfair italic border-b border-bollywood-gold/50 pb-1 hover:text-white hover:border-white transition-colors"
+            >
+              Wait! Play the Birthday Video &rarr;
             </button>
           </motion.div>
         </motion.div>
